@@ -42,7 +42,7 @@ def create_sub_mask_annotation(sub_mask):
         poly = poly.simplify(1.0, preserve_topology=False)
         #simplification_rate = np.max([1.0, n_vertice/100.0])
         #poly = poly.simplify(simplification_rate, preserve_topology=True)
-        poly = poly.simplify(1.0, preserve_topology=True)
+        poly = poly.simplify(0.1, preserve_topology=True)
 
         if poly.is_empty:
             # Go to next iteration, dont save empty values in list
@@ -76,10 +76,11 @@ def segmentation_to_polygon_obj(segmentation, class_id=1):
 @click.command()
 @click.option("--mask-dir", "-c", default=f"{SCRIPT_DIR}/mask")
 @click.option("--width", "-w", default=1920)
-@click.option("--height", "-h", default=1280)
+@click.option("--height", "-h", default=1080)
 def main(mask_dir, width, height):
     mask_pathes = Path(mask_dir).glob("*.png")
     mask_path_list = [str(mask_path) for mask_path in mask_pathes]
+    mask_path_list = np.sort(mask_path_list)
     default_class_id = 1
 
     output_json_obj = {}
