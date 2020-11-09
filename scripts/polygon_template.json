@@ -1,0 +1,14 @@
+{
+    "type": "polygon",
+    "classId": 1,
+    "probability": 100,
+    "points": [],
+    "groupId": 0,
+    "pointLabels": {},
+    "locked": false,
+    "visible": true,
+    "attributes": [],
+    "trackingId": null,
+    "error": null,
+    "className": "Polygon"
+  }
