@@ -29,6 +29,15 @@ def polygon_mask(poly, im_size):
     img_mask = cv2.fillPoly(img_mask, interiors, 0)
     return img_mask
 
+
+def add_cumulative_mask(mask, polygon):
+    mask_tmp = np.zeros(mask.shape, dtype=np.uint8)
+    poly_as_contour = np.asarray(polygon.exterior.coords)
+    mask_tmp = polygon_mask(polygon, mask.shape)
+    mask = cv2.bitwise_or(mask_tmp, mask)
+    return mask
+
+
 def create_sub_mask_annotation(sub_mask, width, height, kernel_size=10, draw_cumulative_polygon_mask=False):
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
     sub_mask = cv2.morphologyEx(sub_mask, cv2.MORPH_OPEN, kernel)
@@ -38,13 +47,9 @@ def create_sub_mask_annotation(sub_mask, width, height, kernel_size=10, draw_cum
     #contours = measure.find_contours(sub_mask, 0.5, positive_orientation="low")
 
     if draw_cumulative_polygon_mask:
-        def add_cumulative_mask(mask, polygon):
-            mask_tmp = np.zeros(mask.shape, dtype=np.uint8)
-            poly_as_contour = np.asarray(polygon.exterior.coords)
-            mask_tmp = polygon_mask(polygon, mask.shape)
-            mask = cv2.bitwise_or(mask_tmp, mask)
-            return mask
+
         cumulative_mask = np.zeros((height, width), dtype=np.uint8)
+
 
 
     polygons = []
@@ -70,18 +75,8 @@ def create_sub_mask_annotation(sub_mask, width, height, kernel_size=10, draw_cum
         if poly.is_empty:
             # Go to next iteration, dont save empty values in list
             continue
-
         if type(poly) == MultiPolygon:
-            mask_tmp = np.zeros((height, width), np.uint8)
-            n_poly = len(poly.geoms)
-            for i in range(n_poly):
-                poly_sub = poly.geoms[i]
-                mask_tmp = add_cumulative_mask(mask_tmp, poly_sub)
-                segmentation = np.array(poly_sub.exterior.coords).ravel().tolist()
-                if draw_cumulative_polygon_mask:
-                    cumulative_mask = add_cumulative_mask(cumulative_mask, multi_poly)
-                polygons.append(poly_sub)
-                segmentations.append(segmentation)
+            continue
         else:
             segmentation = np.array(poly.exterior.coords).ravel().tolist()
             polygons.append(poly)
