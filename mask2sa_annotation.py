@@ -1,13 +1,10 @@
 import cv2
-import pdb
 import numpy as np
 import click
-import shutil
 import json
 import time
 from tqdm import tqdm
 from pathlib import Path
-from skimage import measure
 from shapely.geometry import Polygon, MultiPolygon
 
 

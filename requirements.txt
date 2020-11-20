@@ -1,7 +1,6 @@
 numpy==1.19.4
-opencv-python==4.4.0.46
+opencv-python==4.4.0.42
 toml==0.10.2
 click==7.1.2
 tqdm==4.51.0
-scikit-image==0.15.0
 shapely==1.7.1
